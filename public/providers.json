@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Abdoulaye Diallo",
+    "Role": "prestataire",
+    "category": "Plombier",
+    "commune": "Dixinn",
+    "latitude": 9.5426,
+    "longitude": -13.6781,
+    "rating": 4.5
+  },
+  {
+    "id": 2,
+    "name": "Fatoumata Camara",
+    "category": "Électricien",
+    "commune": "Matoto",
+    "latitude": 9.5375,
+    "longitude": -13.6783,
+    "rating": 4.0
+  },
+  {
+    "id": 3,
+    "name": "Mamadou Barry",
+    "category": "Maçon",
+    "commune": "Kaloum",
+    "latitude": 9.5167,
+    "longitude": -13.6800,
+    "rating": 4.8
+  }
+]

@@ -1,0 +1,38 @@
+.register-background {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #68a2f8, #6610f2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+
+  /* Effet subtil d’animation */
+  background-size: 200% 200%;
+  animation: gradientMove 10s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Media queries pour mobile */
+@media (max-width: 768px) {
+  .register-background {
+    padding: 8px;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+  .register-form {
+    width: 100% !important;
+    max-width: 98vw !important;
+    padding: 12px !important;
+  }
+}

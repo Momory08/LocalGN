@@ -1,0 +1,106 @@
+import React, { useState } from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import { useSearchParams, useNavigate } from "react-router-dom";
+
+function ResetPassword() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const token = searchParams.get("token");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    if (!password || password.length < 6) {
+      setMessage("❌ Le mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setMessage("❌ Les mots de passe ne correspondent pas.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage("✅ Mot de passe réinitialisé avec succès. Vous pouvez vous connecter.");
+        setTimeout(() => navigate("/login"), 2000);
+      } else {
+        setMessage("❌ " + (data.msg || "Erreur lors de la réinitialisation."));
+      }
+    } catch (err) {
+      setMessage("❌ Erreur serveur. Veuillez réessayer plus tard.");
+    }
+    setLoading(false);
+  };
+
+  if (!token) {
+    return (
+      <>
+        <Header />
+        <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+          <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 16px #6366f122', padding: 36, maxWidth: 400, width: '100%' }}>
+            <h2 style={{ color: '#6366f1', fontWeight: 700, marginBottom: 18, fontSize: 26 }}>Lien invalide</h2>
+            <p style={{ color: '#444' }}>Le lien de réinitialisation est invalide ou expiré.</p>
+            <div style={{ textAlign: 'center', marginTop: 18, fontSize: 15 }}>
+              <a href="/forgot-password" style={{ color: '#6366f1', fontWeight: 600, textDecoration: 'none' }}>Demander un nouveau lien</a>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Header />
+      <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+        <div style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 16px #6366f122', padding: 36, maxWidth: 400, width: '100%' }}>
+          <h2 style={{ color: '#6366f1', fontWeight: 700, marginBottom: 18, fontSize: 26 }}>Nouveau mot de passe</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="password"
+              className="form-control form-control-lg"
+              placeholder="Nouveau mot de passe"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              style={{ borderRadius: 8, fontSize: 16, marginBottom: 12 }}
+            />
+            <input
+              type="password"
+              className="form-control form-control-lg"
+              placeholder="Confirmer le mot de passe"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+              required
+              style={{ borderRadius: 8, fontSize: 16, marginBottom: 16 }}
+            />
+            <button type="submit" className="btn btn-primary w-100 btn-lg" style={{ borderRadius: 8, fontWeight: 600, fontSize: 18, background: 'linear-gradient(90deg,#6366f1 60%,#a5b4fc 100%)', border: 'none' }} disabled={loading}>
+              {loading ? "Envoi..." : "Réinitialiser"}
+            </button>
+          </form>
+          {message && (
+            <div className={`alert mt-3 ${message.includes("✅") ? "alert-success" : "alert-danger"}`}>{message}</div>
+          )}
+          <div style={{ textAlign: 'center', marginTop: 18, fontSize: 15 }}>
+            <a href="/login" style={{ color: '#6366f1', fontWeight: 600, textDecoration: 'none' }}>Retour à la connexion</a>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </>
+  );
+}
+
+export default ResetPassword;
